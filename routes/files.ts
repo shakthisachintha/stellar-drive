@@ -7,7 +7,7 @@ router.get('/', (req, res) => {
 });
 
 interface CreateFileDto{
-    title: string
+    title: string;
 }
 
 router.post('/', (req, res) => {

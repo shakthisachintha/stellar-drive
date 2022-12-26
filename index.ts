@@ -9,6 +9,6 @@ app.get("/", (req, res) => {
     res.send("API is working!");
 });
 
-app.use('/files', fileRoutes)
+app.use('/files', fileRoutes);
 
 app.listen(3001, () => console.log("server started at 3001 port"));
