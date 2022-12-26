@@ -1,0 +1,19 @@
+name: Build Project
+
+on:
+  push:
+    branches: [ "backend/development", "backend/master" ]
+  pull_request:
+    branches: [ "backend/development", "backend/master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: npm install
+    - name: Lint code
+      run: npm run lint
+    - name: Run tests
+      run: npm test
