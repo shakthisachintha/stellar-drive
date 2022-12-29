@@ -1,0 +1,36 @@
+.navbar-component {
+  position: sticky;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  .logo-container{
+    display: flex; 
+    flex-direction: row; 
+    align-items: center
+  }
+
+  .nav-menu-container{
+    display: flex; 
+    flex-direction: row; 
+    justify-content: space-between;
+    
+    .nav-item{
+        margin-left: 1rem;
+        margin-right: 1rem;
+        text-decoration: none;
+    }
+
+    .nav-link {
+        color: #fff;
+        text-decoration: none;
+        font-size: var(--font-regular);
+        font-weight: 500;
+        transition: all 0.3s ease-in-out;
+        &:hover {
+            color: #f26a2e;
+        }
+    }
+}
+}
