@@ -3,7 +3,7 @@ import { Observable } from "rxjs";
 export interface AuthState {
   isLoggedIn: boolean;
   user: {
-    userId?: string;
+    username?: string;
     name?: string;
     token?: string;
   };
@@ -17,4 +17,5 @@ export interface IAuthService {
   register(userName: string, password: string, name: string, email: string): Promise<any>;
   refreshToken(): Promise<any>;
   checkAuthStatus(): void
+  getToken(): string;
 }
