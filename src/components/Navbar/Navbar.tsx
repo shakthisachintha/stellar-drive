@@ -21,7 +21,7 @@ export default class Navbar extends React.Component<any, NavbarState>{
       this.setState({
         isLogged: authState.isLoggedIn,
         user: {
-          userId: authState.user?.userId || "",
+          username: authState.user?.username || "",
           name: authState.user?.name || "",
           token: authState.user?.token || ""
         }

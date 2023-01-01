@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Button, Form, Input, Tabs } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { AuthService } from '../../services/AuthService/AuthService';
+import { Toast } from '../../services/ToastNotificationService/Toast';
 
 export default class LoginPage extends Component {
 
@@ -18,8 +19,8 @@ export default class LoginPage extends Component {
     const onFinish = async (values: any) => {
       try {
         await AuthService.getInstance().login(values.username, values.password);
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        Toast.error("Login error", error.message);
       }
     };
 
