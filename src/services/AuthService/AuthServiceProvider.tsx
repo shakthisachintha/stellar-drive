@@ -1,14 +1,28 @@
 import { AuthState, IAuthService } from "./IAuthService";
-import { Auth } from "aws-amplify";
 import { Observable, Subject } from "rxjs";
-import { AWSconfig } from "../../configs";
 import { Toast } from "../ToastNotificationService/Toast";
+import { URLService } from "../URLService/URLService";
+import { NetworkCallService } from "../NetworkCallService/NetworkCallService";
+
+interface StoredUser {
+  username: string;
+  name: string;
+  token: string;
+}
 
 export class AuthServiceProvider implements IAuthService {
   private authStateSubject = new Subject<AuthState>();
 
   constructor() {
-    Auth.configure(AWSconfig.Auth);
+    this.checkAuthStatus();
+  }
+
+  getToken(): string {
+    if (this.isLoggedIn()) {
+      const user = JSON.parse(sessionStorage.getItem("user") || "{}") as StoredUser;
+      return user.token;
+    }
+    return "";
   }
 
   getLoggedInStateObserver(): Observable<AuthState> {
@@ -27,7 +41,7 @@ export class AuthServiceProvider implements IAuthService {
       const user = JSON.parse(sessionStorage.getItem("user") || "{}");
       this.authStateSubject.next({
         isLoggedIn: true,
-        user: { userId: user.userId, name: user.name, token: user.token },
+        user: { username: user.username, name: user.name, token: user.token },
       });
     } else {
       this.authStateSubject.next({ isLoggedIn: false, user: {} });
@@ -36,23 +50,25 @@ export class AuthServiceProvider implements IAuthService {
 
   async login(userName: string, password: string): Promise<any> {
     try {
-      const user = await Auth.signIn(userName, password);
-      const userId = user.username;
-      const name = user.attributes?.name || userId;
-      const session = await Auth.currentSession();
-      const token = session.getIdToken().getJwtToken();
+      const url = URLService.getInstance().generateURL('/auth/login');
+      const response = await NetworkCallService.getInstance().post(url, {username: userName,password: password});
+      if (response.status !== 200) {
+        const data = await response.json();
+        throw new Error(data.error);
+      }
+      const { user, token} = await response.json();
+      
       window.sessionStorage.setItem(
         "user",
-        JSON.stringify({ userId, name, token })
+        JSON.stringify({ username:user.username, name:user.name, token })
       );
       this.authStateSubject.next({
         isLoggedIn: true,
-        user: { userId, name, token },
+        user: { username:user.username, name:user.name, token },
       });
       Toast.success("Login Success");
-      return { userId, name, token };
+      return user;
     } catch (error: any) {
-      console.log("error signing in", error);
       Toast.error("Login error", error.message);
       return { error };
     }
@@ -65,14 +81,13 @@ export class AuthServiceProvider implements IAuthService {
     email: string
   ): Promise<any> {
     try {
-      const user = await Auth.signUp({
-        username: userName,
-        password,
-        attributes: { name, email },
-      });
-      this.login(userName, password);
+      const url = URLService.getInstance().generateURL('/auth/register');
+      const response = await NetworkCallService.getInstance().post(url, {username: userName,password: password, name: name, email: email});
+      if (response.status !== 200) {
+        const data = await response.json();
+        throw new Error(data.error);
+      }    
       Toast.success("Signup Success", "Please confrim your account to proceed.")
-      return { user };
     } catch (error: any) {
       console.log("error signing up:", error);
       Toast.error("Signup error", error.message);
@@ -85,7 +100,6 @@ export class AuthServiceProvider implements IAuthService {
       return { error: "No user logged in" };
     }
     try {
-      await Auth.signOut();
       window.sessionStorage.removeItem("user");
       this.authStateSubject.next({ isLoggedIn: false, user: {} });
       Toast.info("Logged out!");
