@@ -1,14 +1,20 @@
 import express from "express";
-import fileRoutes from './routes/files';
+import cors from "cors";
+import fileRoutes from './routes/api/files';
+import authRoutes from './routes/api/auth';
+import { APP_CONFIG } from "./configs";
+
 const app = express();
 
 app.use(express.json());
+app.use(cors())
 
 // create a welcome route
 app.get("/", (req, res) => {
     res.send("API is working!");
 });
 
-app.use('/files', fileRoutes);
+app.use('/api/files', fileRoutes);
+app.use('/api/auth', authRoutes)
 
-app.listen(3001, () => console.log("server started at 3001 port"));
+app.listen(APP_CONFIG.port, () => console.log(`Server started at ${APP_CONFIG.port} port`));
