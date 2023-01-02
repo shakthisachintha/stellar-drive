@@ -17,18 +17,7 @@ jobs:
       run: npm run lint
     # - name: Run tests
     #   run: npm test
-
-
-name: Build and push Docker image
-
-on:
-  push:
-    branches: [ "backend/development", "backend/master"]
-  pull_request:
-    branches: [ "backend/development", "backend/master"]
-
-jobs:
-  build:
+  docker_build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
