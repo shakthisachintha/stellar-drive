@@ -17,3 +17,25 @@ jobs:
       run: npm run lint
     # - name: Run tests
     #   run: npm test
+
+
+name: Build and push Docker image
+
+on:
+  push:
+    branches: [ "backend/development", "backend/master"]
+  pull_request:
+    branches: [ "backend/development", "backend/master"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: docker/build-push-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        registry: docker.io
+        repository: cloudcw/cloud_cw
+        tag_with_sha: true
