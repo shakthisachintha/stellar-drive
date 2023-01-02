@@ -11,6 +11,10 @@ export const AWS_CONFIG = {
     JWKS: {
         Kid: process.env.JWKS_KID || "KID",
         N: process.env.JWKS_N || "N",
+    },
+    AccessCredentials: {
+        AccessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
+        SecretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
     }
 
 }
