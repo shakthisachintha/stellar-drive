@@ -2,11 +2,12 @@ import { Request, Response, Router, RequestHandler} from "express";
 import multer from 'multer';
 import {auth } from "../../middleware/auth";
 import AWS from 'aws-sdk';
+import { AWS_CONFIG } from "../../configs";
 
 AWS.config.update({
   credentials: {
-    accessKeyId: "AKIAWIAEQR5BMOSFEBHI",
-    secretAccessKey: "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",
+    accessKeyId: AWS_CONFIG.AccessCredentials.AccessKeyId,
+    secretAccessKey: AWS_CONFIG.AccessCredentials.SecretAccessKey,
   }
 })
 
