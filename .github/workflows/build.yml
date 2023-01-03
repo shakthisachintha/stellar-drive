@@ -46,7 +46,7 @@ jobs:
           echo "Image ID: $image_id"
       #---------------------------------------------------------------------------------
       - name: change image tag
-        run: docker tag ${{ steps.image_id.outputs.image_id }} cloudcw/stellar-drive:Updated
+        run: docker tag $image_id cloudcw/stellar-drive:Updated
 
       - name: Push Docker image to Docker Hub
         run: docker push cloudcw/stellar-drive:Updated
