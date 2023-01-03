@@ -9,6 +9,7 @@ import ErrorPage from './pages/ErrorPage/ErrorPage';
 import LandingPage from './pages/LandingPage/LandingPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import './App.scss';
+import UploadPage from './pages/UploadPage/UploadPage';
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
             <Route exact path="/" component={LandingPage} />
             <Route exact path="/dashboard" component={DashboardPage} />
             <Route exact path="/login" component={LoginPage} />
+            <Route exact path="/upload" component={UploadPage} />
             <Route path="*" component={ErrorPage} />
           </Switch>
         </Content>
