@@ -12,8 +12,10 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@v3
+
         - name: Install dependencies
           run: npm install
+
         - name: Lint code
           run: npm run lint
       # - name: Run tests
@@ -24,6 +26,7 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@v3
+
         - uses: docker/build-push-action@v3
           with:
             username: ${{ secrets.DOCKER_USERNAME }}
