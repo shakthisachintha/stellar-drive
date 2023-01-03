@@ -38,7 +38,7 @@ jobs:
         run: docker build -t stellar-drive .
 
       - name: Push Docker image to Docker Hub
-        run: docker push docker push cloudcw/stellardrive:latest
+        run: docker push cloudcw/stellardrive:latest
 
       # - name: Build and push Docker image
       #   run: |
