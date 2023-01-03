@@ -13,7 +13,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Build and push
+      - name: Build and push image
         uses: docker/build-push-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
