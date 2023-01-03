@@ -7,7 +7,7 @@ on:
     branches: ["backend/development", "backend/master"]
 
 jobs:
-  job_1:
+  job:
     build:
       runs-on: ubuntu-latest
       steps:
@@ -16,12 +16,6 @@ jobs:
           run: npm install
         - name: Lint code
           run: npm run lint
-      # - name: Run tests
-      #   run: npm test
-  job_2:
-    build:
-      runs-on: ubuntu-latest
-      steps:
         - uses: actions/checkout@v2
         - uses: docker/build-push-action@v2
           with:
