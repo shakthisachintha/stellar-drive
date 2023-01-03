@@ -43,9 +43,8 @@ jobs:
       - name: Get image ID
         run: |
           image_id=$(docker images --all --format "{{.ID}}" | grep myimage | awk '{print $1}')
-        echo "Image ID: $image_id"
+          echo "Image ID: $image_id"
       #---------------------------------------------------------------------------------
-
       - name: change image tag
         run: docker tag ${{ steps.image_id.outputs.image_id }} cloudcw/stellar-drive:Updated
 
