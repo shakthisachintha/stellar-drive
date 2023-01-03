@@ -44,4 +44,4 @@ jobs:
       #   run: |
       #     docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       #     docker build -t ${{ secrets.DOCKER_PASSWORD }}/stellar-drive .
-      #     docker push ${{ secrets.DOCKER_PASSWORD }}/stellar-drive
+      #     docker push ${{ secrets.DOCKER_PASSWORD }}/stellar-drive:latest
