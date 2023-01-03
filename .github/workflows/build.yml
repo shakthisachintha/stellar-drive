@@ -18,14 +18,8 @@ jobs:
 
         - name: Lint code
           run: npm run lint
-      # - name: Run tests
-      #   run: npm test
-
-  second_job:
-    docker_build:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v3
+        # - name: Run tests
+        #   run: npm test
 
         - uses: docker/build-push-action@v3
           with:
