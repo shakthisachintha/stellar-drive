@@ -15,5 +15,16 @@ jobs:
         run: npm install
       - name: Lint code
         run: npm run lint
-    # - name: Run tests
-    #   run: npm test
+      # - name: Run tests
+      #   run: npm test
+
+      - name: Push Docker image to Docker Hub
+        uses: actions/push-docker-image-to-dockerhub@v1
+        with:
+          image_name: stellar-drive
+          image_tag: latest
+          dockerhub_username: ${{ secrets.DOCKER_USERNAME }}
+          dockerhub_password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: docker.io
+          repository: cloudcw/cloud_cw
+          tag_with_sha: true
