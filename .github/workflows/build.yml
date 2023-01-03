@@ -36,11 +36,11 @@ jobs:
 
       - name: Build Docker Image
         run: |
-        docker build -t stellar-drive .
-        IMAGE_ID=$(docker build -t my-image . --format '{{.ID}}')
-        echo "Image ID: $IMAGE_ID"
+          docker build -t stellar-drive .
+          IMAGE_ID=$(docker build -t my-image . --format '{{.ID}}')
+          echo "Image ID: $IMAGE_ID"
         # Save the image ID to a workflow output variable
-        echo "::set-output name=image_id::$IMAGE_ID"
+          echo "::set-output name=image_id::$IMAGE_ID"
 
       - name : change image tag
         run: docker tag ${{ steps.build.outputs.image_id }} cloudcw/stellar-drive:Updated
