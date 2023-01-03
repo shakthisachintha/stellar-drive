@@ -38,19 +38,12 @@ jobs:
         run: docker build -t stellar-drive .
 
       # -----------get image id-------------------------------------------------------
-      - name: Pull image from repository
-        run: |
-          docker pull cloudcw/stellar-drive:latest
       - name: Get image ID
-        run: |
-          image_id=$(docker inspect -f '{{.Id}}' cloudcw/stellar-drive:latest)
-      - name: Set output variable
-        id: image_id
-        run: |
-          echo "::set-output name=image_id::$image_id"
+        run: docker images | grep stellar-drive
       #---------------------------------------------------------------------------------
+
       - name: change image tag
-        run: docker tag ${{ steps.build.outputs.image_id }} cloudcw/stellar-drive:Updated
+        run: docker tag ${{ steps.image_id.outputs.image_id }} cloudcw/stellar-drive:Updated
 
       - name: Push Docker image to Docker Hub
         run: docker push cloudcw/stellar-drive:Updated
