@@ -34,8 +34,15 @@ jobs:
       - name: Login to Docker
         run: docker login -u "$(cat docker-credentials.txt | jq -r '.username')" -p "$(cat docker-credentials.txt | jq -r '.password')"
 
-      - name: Build Docker Image
-        run: docker build -t stellar-drive .
+      # - name: Build Docker Image
+      #   run: docker build -t stellar-drive .
+      #   outputs:
+      #     image-id: ${{ steps.build.outputs.image-id }}
+      - name: Build Docker image
+        uses: actions/docker/build@v1
+        with:
+          context: .
+          dockerfile: Dockerfile
         outputs:
           image-id: ${{ steps.build.outputs.image-id }}
 
