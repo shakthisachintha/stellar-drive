@@ -38,8 +38,12 @@ jobs:
         run: docker build -t stellar-drive .
 
       # -----------get image id-------------------------------------------------------
+      # - name: Get image ID
+      #   run: docker images | grep stellar-drive
       - name: Get image ID
-        run: docker images | grep stellar-drive
+        run: |
+          image_id=$(docker images --all --format "{{.ID}}" | grep myimage | awk '{print $1}')
+        echo "Image ID: $image_id"
       #---------------------------------------------------------------------------------
 
       - name: change image tag
