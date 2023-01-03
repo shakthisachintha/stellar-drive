@@ -35,11 +35,9 @@ jobs:
         run: docker login -u "$(cat docker-credentials.txt | jq -r '.username')" -p "$(cat docker-credentials.txt | jq -r '.password')"
 
       - name: Build Docker Image
-        run: |
-          docker build -t stellar-drive .
-          IMAGE_ID=$(docker build -t my-image . --format '{{.ID}}')
-          echo "Image ID: $IMAGE_ID"
-          echo "::set-output name=image_id::$IMAGE_ID"
+        run: docker build -t stellar-drive .
+        outputs:
+          image-id: ${{ steps.build.outputs.image-id }}
 
       - name: change image tag
         run: docker tag ${{ steps.build.outputs.image_id }} cloudcw/stellar-drive:Updated
