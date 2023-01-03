@@ -7,7 +7,7 @@ on:
     branches: ["backend/development", "backend/master"]
 
 jobs:
-  job_1:
+  first_job:
     build:
       runs-on: ubuntu-latest
       steps:
@@ -19,7 +19,7 @@ jobs:
       # - name: Run tests
       #   run: npm test
 
-  job_2:
+  second_job:
     docker_build:
       runs-on: ubuntu-latest
       steps:
