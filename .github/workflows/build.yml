@@ -11,23 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: Install dependencies
         run: npm install
+
       - name: Lint code
         run: npm run lint
-      # - name: Run tests
-      #   run: npm test
 
-      # - name: Push Docker image to Docker Hub
-      #   uses: actions/push-docker-image-to-dockerhub@v1
-      #   with:
-      #     image_name: stellar-drive
-      #     image_tag: latest
-      #     dockerhub_username: ${{ secrets.DOCKER_USERNAME }}
-      #     dockerhub_password: ${{ secrets.DOCKER_PASSWORD }}
-      #     registry: docker.io
-      #     repository: cloudcw/cloud_cw
-      #     tag_with_sha: true
       - name: Retrieve Docker login credentials
         run: echo "${{ secrets.DOCKER_CREDENTIALS }}" > docker-credentials.txt
 
@@ -37,22 +27,8 @@ jobs:
       - name: Build Docker Image
         run: docker build -t stellar-drive .
 
-      # -----------get image id-------------------------------------------------------
-      # - name: Get image ID
-      #   run: docker images | grep stellar-drive
-      - name: Get image ID
-        run: |
-          image_id=$(docker images --all --format "{{.ID}}" | grep myimage | awk '{print $1}')
-          echo "Image ID: $image_id"
-      #---------------------------------------------------------------------------------
       - name: change image tag
-        run: docker tag $(docker images -q stellar-drive) cloudcw/stellar-drive:Updated
+        run: docker tag $(docker images -q stellar-drive) cloudcw/stellar-drive:2.3
 
       - name: Push Docker image to Docker Hub
-        run: docker push cloudcw/stellar-drive:Updated
-
-      # - name: Build and push Docker image
-      #   run: |
-      #     docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-      #     docker build -t ${{ secrets.DOCKER_PASSWORD }}/stellar-drive .
-      #     docker push ${{ secrets.DOCKER_PASSWORD }}/stellar-drive:latest
+        run: docker push cloudcw/stellar-drive:2.3
