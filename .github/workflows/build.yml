@@ -18,17 +18,41 @@ jobs:
       - name: Lint code
         run: npm run lint
 
-      - name: Retrieve Docker login credentials
-        run: echo "${{ secrets.DOCKER_CREDENTIALS }}" > docker-credentials.txt
+      # - name: Retrieve Docker login credentials
+      #   run: echo "${{ secrets.DOCKER_CREDENTIALS }}" > docker-credentials.txt
 
-      - name: Login to Docker
-        run: docker login -u "$(cat docker-credentials.txt | jq -r '.username')" -p "$(cat docker-credentials.txt | jq -r '.password')"
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.SECRET_KEY }}
+          aws-region: us-west-2
 
-      - name: Build Docker Image
-        run: docker build -t stellar-drive .
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
-      - name: change image tag
-        run: docker tag $(docker images -q stellar-drive) cloudcw/stellar-drive:2.3
+      - name: Build, tag, and push the image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.REPO_NAME }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          # Build a docker container and push it to ECR 
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          echo "Pushing image to ECR..."
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-      - name: Push Docker image to Docker Hub
-        run: docker push cloudcw/stellar-drive:2.3
+      # - name: Login to Docker
+      #   run: docker login -u "$(cat docker-credentials.txt | jq -r '.username')" -p "$(cat docker-credentials.txt | jq -r '.password')"
+
+      # - name: Build Docker Image
+      #   run: docker build -t stellar-drive .
+
+      # - name: change image tag
+      #   run: docker tag $(docker images -q stellar-drive) cloudcw/stellar-drive:2.3
+
+      # - name: Push Docker image to Docker Hub
+      #   run: docker push cloudcw/stellar-drive:2.3
