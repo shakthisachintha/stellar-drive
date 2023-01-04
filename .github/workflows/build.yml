@@ -32,6 +32,9 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Build Docker Image
+        run: docker build -t stellar-drive
+
       - name: tag
         run: docker tag stellar_drive:latest public.ecr.aws/o8x9n0f3/stellar_drive:latest
 
