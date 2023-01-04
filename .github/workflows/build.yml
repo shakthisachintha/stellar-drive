@@ -38,10 +38,10 @@ jobs:
       # - name: tag
       #   run: docker tag stellar_drive:latest public.ecr.aws/o8x9n0f3/stellar_drive:latest
       - name: change image tag
-        run: docker tag $(docker images -q stellar-drive) cloudcw/stellar-drive:2.3
+        run: docker tag $(docker images -q stellar-drive) public.ecr.aws/o8x9n0f3/stellar_drive:2.3
 
       - name: push
-        run: docker push public.ecr.aws/o8x9n0f3/stellar_drive:2.3
+        run: docker push public.ecr.aws/o8x9n0f3/stellar_drive:latest
 
       # - name: Login to Docker
       #   run: docker login -u "$(cat docker-credentials.txt | jq -r '.username')" -p "$(cat docker-credentials.txt | jq -r '.password')"
