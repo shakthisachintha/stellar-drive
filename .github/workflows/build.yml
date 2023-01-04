@@ -28,9 +28,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.SECRET_KEY }}
           aws-region: us-west-2
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+      # - name: Login to Amazon ECR
+      #   id: login-ecr
+      #   uses: aws-actions/amazon-ecr-login@v1
 
       - name: Build Docker Image
         run: docker build -t stellar-drive .
@@ -39,6 +39,10 @@ jobs:
       #   run: docker tag stellar_drive:latest public.ecr.aws/o8x9n0f3/stellar_drive:latest
       - name: change image tag
         run: docker tag $(docker images -q stellar-drive) public.ecr.aws/o8x9n0f3/stellar_drive:2.3
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
       - name: push
         run: docker push public.ecr.aws/o8x9n0f3/stellar_drive:2.3
