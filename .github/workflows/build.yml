@@ -18,36 +18,25 @@ jobs:
       - name: Lint code
         run: npm run lint
 
-      # - name: Retrieve Docker login credentials
-      #   run: echo "${{ secrets.DOCKER_CREDENTIALS }}" > docker-credentials.txt
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: AKIAVXK5GXIMWPS4MFH6
-          aws-secret-access-key: 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
+          aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.SECRET_KEY }}
           aws-region: us-east-1
-
-      # - name: Login to Amazon ECR
-      #   id: login-ecr
-      #   uses: aws-actions/amazon-ecr-login@v1
 
       - name: Build Docker Image
         run: docker build -t stellar-drive .
 
-      # - name: tag
-      #   run: docker tag stellar_drive:latest public.ecr.aws/o8x9n0f3/stellar_drive:latest
       - name: change image tag
-        run: docker tag $(docker images -q stellar-drive) public.ecr.aws/o8x9n0f3/stellar_drive:2.3
+        run: docker tag $(docker images -q stellar-drive) 393721854489.dkr.ecr.us-east-1.amazonaws.com/stellar_drive:2.3
 
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-        run: echo login success!
 
       - name: push
-        # run: docker push public.ecr.aws/o8x9n0f3/stellar_drive:2.3
-        run: docker push public.ecr.aws/o8x9n0f3/stellar_drive
+        run: docker push 393721854489.dkr.ecr.us-east-1.amazonaws.com/stellar_drive:2.3
 
       # - name: Login to Docker
       #   run: docker login -u "$(cat docker-credentials.txt | jq -r '.username')" -p "$(cat docker-credentials.txt | jq -r '.password')"
