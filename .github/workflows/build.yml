@@ -2,16 +2,38 @@ name: Build Project Frontend
 
 on:
   push:
-    branches: [ "frontend/development", "frontend/master" ]
+    branches: ["frontend/development", "frontend/master"]
   pull_request:
-    branches: [ "frontend/development", "frontend/master" ]
+    branches: ["frontend/development", "frontend/master"]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Install dependencies
-      run: npm install
-    - name: Build project
-      run: npm run build
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.SECRET_KEY }}
+          aws-region: us-east-1
+
+      - name: Build Docker Image
+        run: docker build -t stellar-drive .
+
+      - name: change image tag
+        run: docker tag $(docker images -q stellar-drive) 393721854489.dkr.ecr.us-east-1.amazonaws.com/stellar_drive:image
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: push
+        run: docker push 393721854489.dkr.ecr.us-east-1.amazonaws.com/stellar_drive:image
