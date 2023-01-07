@@ -31,12 +31,12 @@ jobs:
       - name: Build Docker Image
         run: docker build -t stellar-drive .
 
-      - name: change image tag
+      - name: Change image tag
         run: docker tag $(docker images -q stellar-drive) 393721854489.dkr.ecr.us-east-1.amazonaws.com/stellar_drive:2.3
 
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: push
+      - name: Push Docker Image
         run: docker push 393721854489.dkr.ecr.us-east-1.amazonaws.com/stellar_drive:2.3

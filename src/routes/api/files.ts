@@ -39,7 +39,7 @@ router.get("/", auth as RequestHandler, (req: any, res: any) => {
 
     const files = data.Contents;
 
-    let resp_file_array: File[] = [];
+    const resp_file_array: File[] = [];
 
     files.forEach((file: any) => {
       const fileName = path.basename(file.Key);
