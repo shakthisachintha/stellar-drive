@@ -18,6 +18,9 @@ jobs:
       - name: Lint code
         run: npm run lint
 
+      - name: Build code
+        run: npm run build
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -37,15 +40,3 @@ jobs:
 
       - name: push
         run: docker push 393721854489.dkr.ecr.us-east-1.amazonaws.com/stellar_drive:2.3
-
-      # - name: Login to Docker
-      #   run: docker login -u "$(cat docker-credentials.txt | jq -r '.username')" -p "$(cat docker-credentials.txt | jq -r '.password')"
-
-      # - name: Build Docker Image
-      #   run: docker build -t stellar-drive .
-
-      # - name: change image tag
-      #   run: docker tag $(docker images -q stellar-drive) cloudcw/stellar-drive:2.3
-
-      # - name: Push Docker image to Docker Hub
-      #   run: docker push cloudcw/stellar-drive:2.3
