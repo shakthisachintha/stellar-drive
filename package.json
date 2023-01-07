@@ -14,8 +14,10 @@
     "typescript": "^4.9.4"
   },
   "scripts": {
-    "start": "nodemon --exec ts-node index.ts",
-    "lint": "eslint --ext .ts . --ignore-pattern node_modules/"
+    "start dev": "nodemon --exec ts-node src/index.ts",
+    "lint": "eslint --ext .ts . --ignore-pattern node_modules/",
+    "build": "tsc",
+    "start": "node build/index.js"
   },
   "dependencies": {
     "aws-sdk": "^2.1286.0",
