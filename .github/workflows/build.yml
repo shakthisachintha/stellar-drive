@@ -55,7 +55,7 @@ jobs:
       - name: Push Docker Image
         run: |
           docker push $ECR_REPOSITORY_URI:$IMAGE_TAG
-          echo "::set-output name=image::$ECR_REPOSITORY_URI:$IMAGE_TAG"
+          echo "image ${{steps.build-image.outputs.image}}"
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
