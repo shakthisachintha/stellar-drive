@@ -2,9 +2,21 @@ name: Build Project Backend
 
 on:
   push:
-    branches: ["backend/development", "backend/master"]
+    branches: ["backend/development", "backend/master","backend-development-sakun"]
   pull_request:
-    branches: ["backend/development", "backend/master"]
+    branches: ["backend/development", "backend/master","backend-development-sakun"]
+
+env:
+  AWS_REGION: us-east-1                  # set this to your preferred AWS region, e.g. us-west-1
+  ECR_REPOSITORY: stellar-drive-backend          # set this to your Amazon ECR repository name
+  ECS_SERVICE: sd-service                # set this to your Amazon ECS service name
+  ECS_CLUSTER: sd-cluster                 # set this to your Amazon ECS cluster name
+  ECS_TASK_DEFINITION: .github/workflows/task-definition.json      # set this to the path to your Amazon ECS task definition                                           # file, e.g. .aws/task-definition.json
+  CONTAINER_NAME: sd-container           # set this to the name of the container in the containerDefinitions section of your task definition
+
+permissions:
+  id-token: write
+  contents: read # This is required for actions/checkout@v2
 
 jobs:
   build:
@@ -28,15 +40,20 @@ jobs:
           aws-secret-access-key: ${{ secrets.SECRET_KEY }}
           aws-region: us-east-1
 
-      - name: Build Docker Image
-        run: docker build -t stellar-drive .
-
-      - name: Change image tag
-        run: docker tag $(docker images -q stellar-drive) 393721854489.dkr.ecr.us-east-1.amazonaws.com/stellar_drive:2.3
-
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Push Docker Image
-        run: docker push 393721854489.dkr.ecr.us-east-1.amazonaws.com/stellar_drive:2.3
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+
+        # Build a docker container and
+        # push it to ECR so that it can
+        # be deployed to ECS.
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
