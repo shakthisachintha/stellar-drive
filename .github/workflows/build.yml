@@ -40,14 +40,45 @@ jobs:
           aws-secret-access-key: ${{ secrets.SECRET_KEY }}
           aws-region: us-east-1
 
-      - name: Build Docker Image
-        run: docker build -t stellar-drive .
+      # - name: Build Docker Image
+      #   run: docker build -t stellar-drive .
 
-      - name: Change image tag
-        run: docker tag $(docker images -q stellar-drive) public.ecr.aws/q3m3r1w9/stellar-drive-backend:2.4
+      # - name: Change image tag
+      #   run: docker tag $(docker images -q stellar-drive) public.ecr.aws/q3m3r1w9/stellar-drive-backend:2.4
 
-      - name: Login to Amazon ECR
-        run: aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/q3m3r1w9
+      # - name: Login to Amazon ECR
+      #   run: aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/q3m3r1w9
 
-      - name: Push Docker Image
-        run: docker push public.ecr.aws/q3m3r1w9/stellar-drive-backend:2.4
+      # - name: Push Docker Image
+      #   run: docker push public.ecr.aws/q3m3r1w9/stellar-drive-backend:2.4
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+
+        # Build a docker container and
+        # push it to ECR so that it can
+        # be deployed to ECS.
+        run: |
+          aws ecr-public get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+      # - name: Fill in the new image ID in the Amazon ECS task definition
+      #   id: task-def
+      #   uses: aws-actions/amazon-ecs-render-task-definition@v1
+      #   with:
+      #     task-definition: ${{ env.ECS_TASK_DEFINITION }}
+      #     container-name: ${{ env.CONTAINER_NAME }}
+      #     image: ${{ steps.build-image.outputs.image }}
+
+      # - name: Deploy Amazon ECS task definition
+      #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      #   with:
+      #     task-definition: ${{ steps.task-def.outputs.task-definition }}
+      #     service: ${{ env.ECS_SERVICE }}
+      #     cluster: ${{ env.ECS_CLUSTER }}
+      #     wait-for-service-stability: true
