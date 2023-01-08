@@ -47,8 +47,7 @@ jobs:
         run: docker tag $(docker images -q stellar-drive) public.ecr.aws/q3m3r1w9/stellar-drive-backend:2.4
 
       - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        run: aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/q3m3r1w9
 
       - name: Push Docker Image
         run: docker push public.ecr.aws/q3m3r1w9/stellar-drive-backend:2.4
