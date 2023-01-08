@@ -44,7 +44,7 @@ jobs:
 
       - name: Build Docker Image
         id: build-image
-        run: docker build -t $ECR_REPOSITORY_URI:$IMAGE_TAG .
+        run: docker build -t ${{ env.ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }} .
 
       # - name: Change image tag
       #   run: docker tag $(docker images -q stellar-drive) public.ecr.aws/q3m3r1w9/stellar-drive-backend:2.4
