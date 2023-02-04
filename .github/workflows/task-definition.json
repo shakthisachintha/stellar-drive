@@ -4,7 +4,12 @@
     "containerDefinitions": [
       {
         "dnsSearchDomains": null,
-        "environmentFiles": null,
+        "environmentFiles": [
+          {
+            "value": "arn:aws:s3:::stella-drive-s3/.env",
+            "type": "s3"
+          }
+        ],
         "logConfiguration": null,
         "entryPoint": null,
         "portMappings": [

@@ -15,6 +15,7 @@ env:
   CONTAINER_NAME: sd-container           # set this to the name of the container in the containerDefinitions section of your task definition
   IMAGE_TAG: ${{ github.sha }}
   ECR_REPOSITORY_URI: 575771317398.dkr.ecr.us-east-1.amazonaws.com/stellar-drive
+  ECR_REPOSITORY_DOMAIN_URI:  575771317398.dkr.ecr.us-east-1.amazonaws.com
 
 permissions:
   id-token: write
@@ -47,7 +48,7 @@ jobs:
         run: docker build -t ${{ env.ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }} .
         
       - name: Login to Amazon ECR
-        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 575771317398.dkr.ecr.us-east-1.amazonaws.com
+        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ env.ECR_REPOSITORY_DOMAIN_URI }}
 
       - name: Push Docker Image
         run: |
