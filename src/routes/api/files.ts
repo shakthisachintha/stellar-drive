@@ -12,6 +12,35 @@ AWS.config.update({
   }
 })
 
+const _getFileType = (filename: string) => {
+  const parts = filename.split('.');
+  const type = parts[parts.length - 1];
+  
+  // "photo" | "video" | "audio" | "document" | "zip" | "other"
+
+  if (type === 'png' || type === 'jpg' || type === 'jpeg') {
+    return 'photo';
+  }
+
+  if (type === 'mp4' || type === 'mov') {
+    return 'video';
+  }
+
+  if (type === 'mp3' || type === 'wav') {
+    return 'audio';
+  }
+
+  if (type === 'pdf' || type === 'doc' || type === 'docx' || type === 'txt') {
+    return 'document';
+  }
+
+  if (type === 'zip' || type === 'rar') {
+    return 'zip';
+  }
+
+  return 'other';
+}
+
 const s3 = new AWS.S3();
 const router = Router();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -22,6 +51,7 @@ interface File {
   name: string;
   size: string;
   date: Date;
+  type: "photo" | "video" | "audio" | "document" | "zip" | "other"
 }
 
 router.get("/", auth as RequestHandler, (req: any, res: any) => {
@@ -45,17 +75,19 @@ router.get("/", auth as RequestHandler, (req: any, res: any) => {
       const fileName = path.basename(file.Key);
       const fileSize = (Math.round(file.Size / 1000)/100).toString() + ' Mb';
       const fileDate = file.LastModified;
-      resp_file_array.push({name: fileName, size: fileSize, date: fileDate})
+      const fileType = _getFileType(fileName);
+      resp_file_array.push({name: fileName, size: fileSize, date: fileDate, type: fileType})
     })
 
     res.send({files: resp_file_array});
   });
 });
 
-router.post("/file", auth as RequestHandler, (req: any, res: any) => {
-  const folder_id = req.user.username;
-  const file_name = req.body.fileName;
-  const file_key = `${folder_id}/${file_name}`;
+router.get("/get", (req: any, res: any) => {
+  
+  // get file name from url encoded query string
+  const file_key = req.query.filename as string;
+
   const params = {
     Bucket: BUCKET_NAME,
     Key: file_key,
@@ -69,7 +101,7 @@ router.post("/file", auth as RequestHandler, (req: any, res: any) => {
 
     // Set the content type and disposition of the file
     res.set('Content-Type', data.ContentType);
-    res.set('Content-Disposition', `attachment; filename=${file_name}`);
+    res.set('Content-Disposition', `attachment; filename=${file_key}`);
 
     // Send the file in the response
     return res.send(data.Body);
