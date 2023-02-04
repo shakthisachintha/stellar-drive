@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout } from 'antd';
+import { Col, Layout, Row } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
@@ -14,17 +14,21 @@ import UploadPage from './pages/UploadPage/UploadPage';
 function App() {
 
   return (
-    <Layout>
+    <Layout style={{backgroundColor: 'white'}}>
       <BrowserRouter>
         <Navbar />
         <Content>
-          <Switch>
-            <Route exact path="/" component={LandingPage} />
-            <Route exact path="/dashboard" component={DashboardPage} />
-            <Route exact path="/login" component={LoginPage} />
-            <Route exact path="/upload" component={UploadPage} />
-            <Route path="*" component={ErrorPage} />
-          </Switch>
+          <Row align={'middle'} justify={'center'}>
+            <Col className='main-wrapper' span={20}>
+              <Switch>
+                <Route exact path="/" component={LandingPage} />
+                <Route exact path="/dashboard" component={DashboardPage} />
+                <Route exact path="/login" component={LoginPage} />
+                <Route exact path="/upload" component={UploadPage} />
+                <Route path="*" component={ErrorPage} />
+              </Switch>
+            </Col>
+          </Row>
         </Content>
         <SiteFooter />
       </BrowserRouter>
