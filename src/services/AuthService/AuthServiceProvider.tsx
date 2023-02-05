@@ -49,29 +49,30 @@ export class AuthServiceProvider implements IAuthService {
   }
 
   async login(userName: string, password: string): Promise<any> {
-    try {
-      const url = URLService.getInstance().generateURL('/auth/login');
-      const response = await NetworkCallService.getInstance().post(url, {username: userName,password: password});
-      if (response.status !== 200) {
-        const data = await response.json();
-        throw new Error(data.error);
+    return new Promise(async (resolve, reject) => {
+      try {
+        const url = URLService.getInstance().generateURL('/auth/login');
+        const response = await NetworkCallService.getInstance().post(url, { username: userName, password: password });
+        if (response.status !== 200) {
+          const data = await response.json();
+          throw new Error(data.error);
+        }
+        const { user, token } = await response.json();
+
+        window.sessionStorage.setItem(
+          "user",
+          JSON.stringify({ username: user.username, name: user.name, token })
+        );
+        this.authStateSubject.next({
+          isLoggedIn: true,
+          user: { username: user.username, name: user.name, token },
+        });
+        Toast.success("Login Success");
+        resolve(user);
+      } catch (error: any) {
+        reject(error);
       }
-      const { user, token} = await response.json();
-      
-      window.sessionStorage.setItem(
-        "user",
-        JSON.stringify({ username:user.username, name:user.name, token })
-      );
-      this.authStateSubject.next({
-        isLoggedIn: true,
-        user: { username:user.username, name:user.name, token },
-      });
-      Toast.success("Login Success");
-      return user;
-    } catch (error: any) {
-      Toast.error("Login error", error.message);
-      return { error };
-    }
+    })
   }
 
   async register(
@@ -80,19 +81,22 @@ export class AuthServiceProvider implements IAuthService {
     name: string,
     email: string
   ): Promise<any> {
-    try {
-      const url = URLService.getInstance().generateURL('/auth/register');
-      const response = await NetworkCallService.getInstance().post(url, {username: userName,password: password, name: name, email: email});
-      if (response.status !== 200) {
-        const data = await response.json();
-        throw new Error(data.error);
-      }    
-      Toast.success("Signup Success", "Please confrim your account to proceed.")
-    } catch (error: any) {
-      console.log("error signing up:", error);
-      Toast.error("Signup error", error.message);
-      return { error };
-    }
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        const url = URLService.getInstance().generateURL('/auth/register');
+        const response = await NetworkCallService.getInstance().post(url, { username: userName, password: password, name: name, email: email });
+        if (response.status !== 200) {
+          const data = await response.json();
+          throw new Error(data.error);
+        }
+        Toast.success("Signup Success", "Please confrim your account to proceed.")
+        resolve({ success: true })
+      } catch (error: any) {
+        console.log("error signing up:", error);
+        reject(error);
+      }
+    });
   }
 
   async logout(): Promise<any> {
@@ -120,6 +124,6 @@ export class AuthServiceProvider implements IAuthService {
       const user = JSON.parse(sessionStorage.getItem("user") || "{}") as StoredUser;
       return { username: user.username, name: user.name };
     }
-    return { username: "", name: ""};
+    return { username: "", name: "" };
   }
 }

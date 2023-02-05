@@ -5,18 +5,20 @@ import { Upload } from 'antd';
 import { AuthService } from '../../services/AuthService/AuthService';
 import { Toast } from '../../services/ToastNotificationService/Toast';
 import { Link } from 'react-router-dom';
+import { CONFIG } from '../../configs';
 
 const { Dragger } = Upload;
 
 export default class UploadPage extends React.Component {
     render() {
+        const url = CONFIG.BACKEND_URL + '/api/files';
         const props: UploadProps = {
             name: 'file',
             headers: {
                 "x-auth-token": AuthService.getInstance().getToken()
             },
             multiple: true,
-            action: 'http://localhost:3001/api/files',
+            action: url,
             onChange(info) {
                 const { status } = info.file;
                 if (status !== 'uploading') {
