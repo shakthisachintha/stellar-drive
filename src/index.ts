@@ -11,7 +11,7 @@ app.use(cors())
 
 // create a welcome route
 app.get("/", (req, res) => {
-    res.send("API is working! v8");
+    res.send("API is working! v9");
 });
 
 app.use('/api/files', fileRoutes);
