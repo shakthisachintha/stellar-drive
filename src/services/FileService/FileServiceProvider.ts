@@ -1,87 +1,42 @@
+import { AuthService } from "../AuthService/AuthService";
 import { NetworkCallService } from "../NetworkCallService/NetworkCallService";
 import { URLService } from "../URLService/URLService";
 import { FileInfo, IFileService } from "./IFileService";
 
 export class FileServiceProvider implements IFileService {
-    private APIEndpoint = URLService.getInstance().getBaseURL();
+  private APIEndpoint = URLService.getInstance().getBaseURL();
 
-    listAllFiles(): Promise<FileInfo[]> {
-        return new Promise((resolve, reject) => {
-            NetworkCallService.getInstance().get(`${this.APIEndpoint}/files`)
-                .then((files: FileInfo[]) => {
-                    files = [{
-                        id: '1',
-                        name: 'batch_photo.jpg',
-                        size: 10.24,
-                        type: 'photo',
-                        uploadDate: new Date().toISOString(),
-                        url: 'https://www.africau.edu/images/default/sample.pdf'
-                      }, {
-                        id: '2',
-                        name: 'recorind1.mp3',
-                        size: 10.24,
-                        type: 'audio',
-                        uploadDate: new Date().toISOString(),
-                        url: 'https://www.africau.edu/images/default/sample.pdf'
-                      },
-                      {
-                        id: '3',
-                        name: 'song-2.mp4',
-                        size: 101.24,
-                        type: 'video',
-                        uploadDate: new Date().toISOString(),
-                        url: 'https://www.africau.edu/images/default/sample.pdf'
-                      }, {
-                        id: '4',
-                        name: 'batch_photo.jpg',
-                        size: 10.24,
-                        type: 'photo',
-                        uploadDate: new Date().toISOString(),
-                        url: 'https://www.africau.edu/images/default/sample.pdf'
-                      }, {
-                        id: '5',
-                        name: 'batch_photo.jpg',
-                        size: 10.24,
-                        type: 'other',
-                        uploadDate: new Date().toISOString(),
-                        url: 'https://www.africau.edu/images/default/sample.pdf'
-                      }, {
-                        id: '6',
-                        name: 'batch_photo.jpg',
-                        size: 10.24,
-                        type: 'document',
-                        uploadDate: new Date().toISOString(),
-                        url: 'https://www.africau.edu/images/default/sample.pdf'
-                      }, {
-                        id: '7',
-                        name: 'batch_photo.jpg',
-                        size: 10.24,
-                        type: 'zip',
-                        uploadDate: new Date().toISOString(),
-                        url: 'https://www.africau.edu/images/default/sample.pdf'
-                      }]
-                    resolve(files);
-                })
-                .catch((error) => {
-                    reject(error);
-                })
+  listAllFiles(): Promise<FileInfo[]> {
+    return new Promise((resolve, reject) => {
+      NetworkCallService.getInstance().get(`${this.APIEndpoint}/files`)
+        .then(async (resp) => {
+          const filesArray = await resp.json()
+          resolve(filesArray.files as FileInfo[]);
         })
-    }
+        .catch((error) => {
+          reject(error);
+        })
+    })
+  }
 
-    getFile(id: string): Promise<FileInfo> {
-        return new Promise((resolve, reject) => {
-            NetworkCallService.getInstance().get(`${this.APIEndpoint}/files/${id}`)
-                .then((file: FileInfo) => {
-                    resolve(file);
-                })
-                .catch((error) => {
-                    reject(error);
-                })
-        });
-    }
+  getFile(id: string): Promise<FileInfo> {
+    return new Promise((resolve, reject) => {
+      NetworkCallService.getInstance().get(`${this.APIEndpoint}/files/${id}`)
+        .then((file: FileInfo) => {
+          resolve(file);
+        })
+        .catch((error) => {
+          reject(error);
+        })
+    });
+  }
 
-    downloadFile(id: string): Promise<void> {
-        throw new Error("Method not implemented.");
-    }
+  getDownloadUrl(filename: string): string {
+    const baseUrl = URLService.getInstance().generateURL(`/files/get`)
+    const username = AuthService.getInstance().getLoggedInIUser().username;
+    const encodedFileName = encodeURIComponent(`${username}/${filename}`)
+    const url = `${baseUrl}?filename=${encodedFileName}`
+    return url;
+  }
 
 }

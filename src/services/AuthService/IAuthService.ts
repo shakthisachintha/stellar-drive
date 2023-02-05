@@ -9,6 +9,11 @@ export interface AuthState {
   };
 }
 
+export interface User{
+  username: string;
+  name: string;
+}
+
 export interface IAuthService {
   getLoggedInStateObserver(): Observable<AuthState>;
   isLoggedIn(): boolean;
@@ -18,4 +23,5 @@ export interface IAuthService {
   refreshToken(): Promise<any>;
   checkAuthStatus(): void
   getToken(): string;
+  getLoggedInIUser(): User;
 }

@@ -30,8 +30,9 @@ export default class Navbar extends React.Component<any, NavbarState>{
     AuthService.getInstance().checkAuthStatus();
   }
 
-  handleLogut() {
-    AuthService.getInstance().logout();
+  async handleLogut() {
+    await AuthService.getInstance().logout();
+    window.location.href = '/login';
   }
 
   componentWillUnmount() {

@@ -1,4 +1,4 @@
-import { AuthState, IAuthService } from "./IAuthService";
+import { AuthState, IAuthService, User } from "./IAuthService";
 import { Observable, Subject } from "rxjs";
 import { Toast } from "../ToastNotificationService/Toast";
 import { URLService } from "../URLService/URLService";
@@ -113,5 +113,13 @@ export class AuthServiceProvider implements IAuthService {
 
   refreshToken(): Promise<any> {
     throw new Error("Method not implemented.");
+  }
+
+  getLoggedInIUser(): User {
+    if (this.isLoggedIn()) {
+      const user = JSON.parse(sessionStorage.getItem("user") || "{}") as StoredUser;
+      return { username: user.username, name: user.name };
+    }
+    return { username: "", name: ""};
   }
 }

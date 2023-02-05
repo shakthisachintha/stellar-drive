@@ -1,14 +1,12 @@
 export interface FileInfo {
-    id: string
     name: string;
-    url: string;
-    size: number;
+    size: string;
     type: "photo" | "video" | "audio" | "document" | "zip" | "other"
-    uploadDate: string; 
+    date: string; 
 }
 
 export interface IFileService {
     listAllFiles(): Promise<FileInfo[]>;
     getFile(id: string): Promise<FileInfo>;
-    downloadFile(id: string): Promise<void>;
+    getDownloadUrl(filename: string): string;
 }

@@ -4,13 +4,19 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { AuthService } from '../../services/AuthService/AuthService';
 import { Toast } from '../../services/ToastNotificationService/Toast';
 
-export default class LoginPage extends React.Component {
+export default class LoginPage extends React.Component<any, any> {
+
+  constructor(props: any) {
+    super(props);
+    this.state = { isLogged: false };
+  }
 
   renderLogin() {
 
     const onFinish = async (values: any) => {
       try {
         await AuthService.getInstance().login(values.username, values.password);
+        this.props.history.push('/dashboard');
       } catch (error: any) {
         Toast.error("Login error", error.message);
       }
@@ -63,9 +69,10 @@ export default class LoginPage extends React.Component {
 
     const onFinish = async (values: any) => {
       try {
-        AuthService.getInstance().register(values.username, values.password, values.name, values.email)
-      } catch (error) {
-        console.log(error);
+        await AuthService.getInstance().register(values.username, values.password, values.name, values.email)
+        this.props.history.push('/login');
+      } catch (error: any) {
+        Toast.error("Registration error", error.message);
       }
     };
 
@@ -96,7 +103,7 @@ export default class LoginPage extends React.Component {
           <Form.Item
             name="email"
             label="Email"
-            rules={[{ required: true, message: 'Please enter an email address!' }, {type: 'email', message: 'Please enter a valid email!'}]}
+            rules={[{ required: true, message: 'Please enter an email address!' }, { type: 'email', message: 'Please enter a valid email!' }]}
           >
             <Input autoComplete="off" prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Email" />
           </Form.Item>
