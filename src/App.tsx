@@ -1,4 +1,3 @@
-import React from 'react';
 import { Col, Layout, Row } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
@@ -11,24 +10,35 @@ import LoginPage from './pages/LoginPage/LoginPage';
 import './App.scss';
 import UploadPage from './pages/UploadPage/UploadPage';
 
+const MainWrapper = (props: any) => {
+  return (
+    <Row align={'middle'} justify={'center'}>
+      <Col className='main-wrapper' span={20}>
+        {props.children}
+      </Col>
+    </Row>
+  );
+}
+
+const DashboardPageComponent = (props: any) => <MainWrapper><DashboardPage {...props} /></MainWrapper>;
+const LoginPageComponent = (props: any) => <MainWrapper><LoginPage {...props} /></MainWrapper>;
+const UploadPageComponent = (props: any) => <MainWrapper><UploadPage {...props} /></MainWrapper>;
+const ErrorPageComponent = (props: any) => <MainWrapper><ErrorPage {...props} /></MainWrapper>;
+
 function App() {
 
   return (
-    <Layout style={{backgroundColor: 'white'}}>
+    <Layout style={{ backgroundColor: 'white' }}>
       <BrowserRouter>
         <Navbar />
         <Content>
-          <Row align={'middle'} justify={'center'}>
-            <Col className='main-wrapper' span={20}>
-              <Switch>
-                <Route exact path="/" component={LandingPage} />
-                <Route exact path="/dashboard" component={DashboardPage} />
-                <Route exact path="/login" component={LoginPage} />
-                <Route exact path="/upload" component={UploadPage} />
-                <Route path="*" component={ErrorPage} />
-              </Switch>
-            </Col>
-          </Row>
+          <Switch>
+            <Route exact path="/" component={LandingPage} />
+            <Route exact path="/dashboard" component={DashboardPageComponent} />
+            <Route exact path="/login" component={LoginPageComponent} />
+            <Route exact path="/upload" component={UploadPageComponent} />
+            <Route path="*" component={ErrorPageComponent} />
+          </Switch>
         </Content>
         <SiteFooter />
       </BrowserRouter>

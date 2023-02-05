@@ -1,41 +1,44 @@
 .navbar-component {
-  position: sticky;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-
-  .logo-container{
-    display: flex; 
-    flex-direction: row; 
-    align-items: center
-  }
-
-  .nav-menu-container{
-    display: flex; 
-    flex-direction: row; 
+    position: sticky;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     justify-content: space-between;
-    
-    .nav-item{
-        margin-left: 1rem;
-        margin-right: 1rem;
-        text-decoration: none;
+    padding-left: 8vw !important;
+    padding-right: 8vw !important;
+
+    .logo-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center
     }
 
-    .nav-link {
-        color: #fff;
-        text-decoration: none;
-        font-size: var(--font-regular);
-        font-weight: 500;
-        transition: all 0.3s ease-in-out;
-        cursor: pointer;
-        &:hover {
-            color: #f07e5c;
+    .nav-menu-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        .nav-item {
+            margin-left: 1rem;
+            margin-right: 1rem;
+            text-decoration: none;
+        }
+
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            font-size: var(--font-regular);
+            font-weight: 500;
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+
+            &:hover {
+                color: #f07e5c;
+            }
+        }
+
+        .capitalized {
+            text-transform: capitalize;
         }
     }
-
-    .capitalized {
-        text-transform: capitalize;
-    }
-}
 }
