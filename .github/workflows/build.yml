@@ -8,13 +8,13 @@ on:
 
 env:
   AWS_REGION: us-east-1                  # set this to your preferred AWS region, e.g. us-west-1
-  ECR_REPOSITORY: stellar-drive-backend          # set this to your Amazon ECR repository name
+  ECR_REPOSITORY: stellar-drive         # set this to your Amazon ECR repository name
   ECS_SERVICE: sd-service                # set this to your Amazon ECS service name
   ECS_CLUSTER: sd-cluster                 # set this to your Amazon ECS cluster name
   ECS_TASK_DEFINITION: .github/workflows/task-definition.json      # set this to the path to your Amazon ECS task definition                                           # file, e.g. .aws/task-definition.json
   CONTAINER_NAME: sd-container           # set this to the name of the container in the containerDefinitions section of your task definition
   IMAGE_TAG: ${{ github.sha }}
-  ECR_REPOSITORY_URI: public.ecr.aws/q3m3r1w9/stellar-drive-backend
+  ECR_REPOSITORY_URI: 575771317398.dkr.ecr.us-east-1.amazonaws.com/stellar-drive
 
 permissions:
   id-token: write
@@ -47,12 +47,11 @@ jobs:
         run: docker build -t ${{ env.ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }} .
         
       - name: Login to Amazon ECR
-        run: aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/q3m3r1w9
+        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 575771317398.dkr.ecr.us-east-1.amazonaws.com
 
       - name: Push Docker Image
         run: |
           docker push ${{ env.ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
-          echo "image ${{steps.build-image.outputs.image}}"
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
